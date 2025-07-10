@@ -4,10 +4,12 @@ import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardHeader } from "./DashboardHeader";
 import { KPICards } from "./KPICards";
 import { Charts } from "./Charts";
+import { ComparisonCharts } from "./ComparisonCharts";
 import { DataTable } from "./DataTable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { DataEntryDialog } from "./DataEntryDialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function DashboardLayout() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([
@@ -60,17 +62,32 @@ export function DashboardLayout() {
               dateRange={dateRange}
             />
 
-            {/* Charts */}
-            <Charts 
-              selectedPlatforms={selectedPlatforms} 
-              dateRange={dateRange}
-            />
+            {/* Main Dashboard Tabs */}
+            <Tabs defaultValue="overview" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="comparisons">Comparisons</TabsTrigger>
+                <TabsTrigger value="data">Data Table</TabsTrigger>
+              </TabsList>
 
-            {/* Data Table */}
-            <DataTable 
-              selectedPlatforms={selectedPlatforms} 
-              dateRange={dateRange}
-            />
+              <TabsContent value="overview">
+                <Charts 
+                  selectedPlatforms={selectedPlatforms} 
+                  dateRange={dateRange}
+                />
+              </TabsContent>
+
+              <TabsContent value="comparisons">
+                <ComparisonCharts selectedPlatforms={selectedPlatforms} />
+              </TabsContent>
+
+              <TabsContent value="data">
+                <DataTable 
+                  selectedPlatforms={selectedPlatforms} 
+                  dateRange={dateRange}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </main>
 
