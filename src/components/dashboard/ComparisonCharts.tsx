@@ -9,6 +9,7 @@ import { CalendarIcon, TrendingUp, TrendingDown, Eye, Users, Heart, Target } fro
 import { format, subDays, subWeeks, subMonths, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { cn } from "@/lib/utils";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
+import { PerformanceFilters } from "./PerformanceFilters";
 
 // Mock data for different periods
 const generateMockData = (period: 'week' | 'month' | 'year') => {
@@ -61,6 +62,13 @@ interface ComparisonChartsProps {
 
 export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
   const [selectedMetric, setSelectedMetric] = useState("views");
+  const [selectedPlatform, setSelectedPlatform] = useState("all");
+  const [selectedAccount, setSelectedAccount] = useState("all");
+  const [selectedTeamMember, setSelectedTeamMember] = useState("all");
+  const [dateRange, setDateRange] = useState<{from: Date | undefined, to: Date | undefined}>({
+    from: subDays(new Date(), 30),
+    to: new Date()
+  });
 
   const metricButtons = [
     { id: "views", label: "Views", icon: Eye },
@@ -108,96 +116,83 @@ export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
 
   return (
     <div className="space-y-6">
-      {/* Metric Selection */}
+      {/* Performance Filters */}
+      <PerformanceFilters
+        selectedPlatform={selectedPlatform}
+        selectedAccount={selectedAccount}
+        selectedTeamMember={selectedTeamMember}
+        selectedMetric={selectedMetric}
+        onPlatformChange={setSelectedPlatform}
+        onAccountChange={setSelectedAccount}
+        onTeamMemberChange={setSelectedTeamMember}
+        onMetricChange={setSelectedMetric}
+      />
+
+      {/* Date Range and Comparison Controls */}
       <Card>
         <CardHeader>
-          <CardTitle>Select Performance Metric</CardTitle>
+          <CardTitle>Date Range & Period Comparison</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {metricButtons.map((metric) => {
-              const Icon = metric.icon;
-              return (
-                <Button
-                  key={metric.id}
-                  variant={selectedMetric === metric.id ? "default" : "outline"}
-                  onClick={() => setSelectedMetric(metric.id)}
-                  className="flex items-center gap-2"
-                >
-                  <Icon className="h-4 w-4" />
-                  {metric.label}
-                </Button>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Comparison Controls */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Period Comparison</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-4 items-center">
-            <Select value={comparisonType} onValueChange={(value: 'week' | 'month' | 'custom') => setComparisonType(value)}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Select comparison type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="week">Week on Week</SelectItem>
-                <SelectItem value="month">Month on Month</SelectItem>
-                <SelectItem value="custom">Custom Period</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {comparisonType === 'custom' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Date Range Selection */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Date Range</label>
               <div className="flex gap-2 items-center">
-                <Popover open={isCalendar1Open} onOpenChange={setIsCalendar1Open}>
+                <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-[140px] justify-start text-left font-normal">
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {period1 ? format(period1, "MMM dd") : "Period 1"}
+                      {dateRange.from ? format(dateRange.from, "MMM dd") : "From"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={period1}
-                      onSelect={(date) => {
-                        setPeriod1(date);
-                        setIsCalendar1Open(false);
-                      }}
+                      selected={dateRange.from}
+                      onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
                       initialFocus
                       className="pointer-events-auto"
                     />
                   </PopoverContent>
                 </Popover>
 
-                <span className="text-muted-foreground">vs</span>
+                <span className="text-muted-foreground">to</span>
 
-                <Popover open={isCalendar2Open} onOpenChange={setIsCalendar2Open}>
+                <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-[140px] justify-start text-left font-normal">
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {period2 ? format(period2, "MMM dd") : "Period 2"}
+                      {dateRange.to ? format(dateRange.to, "MMM dd") : "To"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={period2}
-                      onSelect={(date) => {
-                        setPeriod2(date);
-                        setIsCalendar2Open(false);
-                      }}
+                      selected={dateRange.to}
+                      onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
                       initialFocus
                       className="pointer-events-auto"
                     />
                   </PopoverContent>
                 </Popover>
               </div>
-            )}
+            </div>
+
+            {/* Comparison Type */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Comparison Type</label>
+              <Select value={comparisonType} onValueChange={(value: 'week' | 'month' | 'custom') => setComparisonType(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select comparison type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Week on Week</SelectItem>
+                  <SelectItem value="month">Month on Month</SelectItem>
+                  <SelectItem value="custom">Custom Period</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -210,34 +205,73 @@ export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
           <TabsTrigger value="platforms">Platform Analysis</TabsTrigger>
         </TabsList>
 
-        {/* Performance Comparison */}
+        {/* Performance Comparison - Enhanced Visual */}
         <TabsContent value="performance" className="space-y-4">
+          {/* Visual Overview Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance Comparison Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={comparisonData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="platform" stroke="hsl(var(--muted-foreground))" />
+                  <YAxis stroke="hsl(var(--muted-foreground))" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "hsl(var(--card))", 
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "var(--radius)"
+                    }} 
+                  />
+                  <Legend />
+                  <Bar dataKey="current" fill="hsl(var(--primary))" name="Current Period" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="previous" fill="hsl(var(--muted))" name="Previous Period" radius={[2, 2, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Platform Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {comparisonData.map((item) => (
-              <Card key={item.platform} className="relative overflow-hidden">
+              <Card key={item.platform} className="relative overflow-hidden hover:shadow-lg transition-all duration-300">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium capitalize flex items-center justify-between">
                     {item.platform}
                     <div className={cn(
-                      "flex items-center text-xs",
-                      item.change >= 0 ? "text-green-500" : "text-red-500"
+                      "flex items-center text-xs px-2 py-1 rounded-full",
+                      item.change >= 0 ? "text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-900/20" : "text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/20"
                     )}>
                       {item.change >= 0 ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
                       {Math.abs(item.change).toFixed(1)}%
                     </div>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-3">
                   <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Current</span>
-                      <span className="font-medium">{item.current.toLocaleString()}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground text-sm">Current</span>
+                      <span className="font-bold text-lg">{item.current.toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Previous</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground text-sm">Previous</span>
                       <span className="font-medium">{item.previous.toLocaleString()}</span>
                     </div>
                   </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full transition-all duration-1000 ease-out"
+                      style={{ 
+                        width: `${Math.min((item.current / Math.max(item.current, item.previous)) * 100, 100)}%`,
+                        backgroundColor: item.color 
+                      }}
+                    />
+                  </div>
+                  
                   <div 
                     className="absolute bottom-0 left-0 h-1 transition-all duration-500"
                     style={{ 

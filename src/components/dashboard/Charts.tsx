@@ -44,33 +44,32 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
 
   return (
     <div className="space-y-6">
-      {/* Performance Filters */}
-      <PerformanceFilters
-        selectedPlatform={selectedPlatform}
-        selectedAccount={selectedAccount}
-        selectedTeamMember={selectedTeamMember}
-        selectedMetric={selectedMetric}
-        onPlatformChange={setSelectedPlatform}
-        onAccountChange={setSelectedAccount}
-        onTeamMemberChange={setSelectedTeamMember}
-        onMetricChange={setSelectedMetric}
-      />
-
-      {/* Team Leaderboard */}
-      <TeamLeaderboard metric={selectedMetric as 'reach' | 'views' | 'engagement' | 'conversions'} />
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Line Chart - Trends Over Time */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              Performance Trends
-              <span className="text-sm font-normal text-muted-foreground">
-                ({selectedPlatforms.length} platforms selected)
-              </span>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                Performance Trends
+                <span className="text-sm font-normal text-muted-foreground">
+                  ({selectedPlatforms.length} platforms selected)
+                </span>
+              </div>
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            {/* Performance Filters for Trends */}
+            <PerformanceFilters
+              selectedPlatform={selectedPlatform}
+              selectedAccount={selectedAccount}
+              selectedTeamMember={selectedTeamMember}
+              selectedMetric={selectedMetric}
+              onPlatformChange={setSelectedPlatform}
+              onAccountChange={setSelectedAccount}
+              onTeamMemberChange={setSelectedTeamMember}
+              onMetricChange={setSelectedMetric}
+            />
+            
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={mockData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -163,6 +162,9 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Team Leaderboard - Moved to bottom */}
+      <TeamLeaderboard metric={selectedMetric as 'reach' | 'views' | 'engagement' | 'conversions'} />
     </div>
   );
 }
