@@ -61,7 +61,37 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Platform colors
+				twitter: 'hsl(var(--twitter))',
+				instagram: 'hsl(var(--instagram))',
+				youtube: 'hsl(var(--youtube))',
+				linkedin: 'hsl(var(--linkedin))',
+				medium: 'hsl(var(--medium))',
+				reddit: 'hsl(var(--reddit))',
+				website: 'hsl(var(--website))',
+				// Chart colors
+				chart: {
+					'1': 'hsl(var(--chart-1))',
+					'2': 'hsl(var(--chart-2))',
+					'3': 'hsl(var(--chart-3))',
+					'4': 'hsl(var(--chart-4))',
+					'5': 'hsl(var(--chart-5))',
+					'6': 'hsl(var(--chart-6))'
 				}
+			},
+			backgroundImage: {
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-twitter': 'var(--gradient-twitter)',
+				'gradient-instagram': 'var(--gradient-instagram)',
+				'gradient-success': 'var(--gradient-success)'
+			},
+			boxShadow: {
+				'glow': 'var(--shadow-glow)',
+				'card': 'var(--shadow-card)'
+			},
+			transitionTimingFunction: {
+				'smooth': 'var(--transition-smooth)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
