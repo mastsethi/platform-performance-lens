@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, TrendingUp, TrendingDown } from "lucide-react";
+import { CalendarIcon, TrendingUp, TrendingDown, Eye, Users, Heart, Target } from "lucide-react";
 import { format, subDays, subWeeks, subMonths, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { cn } from "@/lib/utils";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
@@ -60,6 +60,14 @@ interface ComparisonChartsProps {
 }
 
 export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
+  const [selectedMetric, setSelectedMetric] = useState("views");
+
+  const metricButtons = [
+    { id: "views", label: "Views", icon: Eye },
+    { id: "reach", label: "Reach", icon: Users },
+    { id: "engagement", label: "Engagement", icon: Heart },
+    { id: "conversions", label: "Conversions", icon: Target }
+  ];
   const [comparisonType, setComparisonType] = useState<'week' | 'month' | 'custom'>('month');
   const [period1, setPeriod1] = useState<Date | undefined>(new Date());
   const [period2, setPeriod2] = useState<Date | undefined>(subMonths(new Date(), 1));
@@ -100,6 +108,31 @@ export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
 
   return (
     <div className="space-y-6">
+      {/* Metric Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Select Performance Metric</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-2">
+            {metricButtons.map((metric) => {
+              const Icon = metric.icon;
+              return (
+                <Button
+                  key={metric.id}
+                  variant={selectedMetric === metric.id ? "default" : "outline"}
+                  onClick={() => setSelectedMetric(metric.id)}
+                  className="flex items-center gap-2"
+                >
+                  <Icon className="h-4 w-4" />
+                  {metric.label}
+                </Button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Comparison Controls */}
       <Card>
         <CardHeader>
@@ -222,7 +255,26 @@ export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
         <TabsContent value="trends">
           <Card>
             <CardHeader>
-              <CardTitle>Month on Month Performance</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>Month on Month Performance</span>
+                <div className="flex gap-2">
+                  {metricButtons.map((metric) => {
+                    const Icon = metric.icon;
+                    return (
+                      <Button
+                        key={metric.id}
+                        size="sm"
+                        variant={selectedMetric === metric.id ? "default" : "outline"}
+                        onClick={() => setSelectedMetric(metric.id)}
+                        className="flex items-center gap-1"
+                      >
+                        <Icon className="h-3 w-3" />
+                        {metric.label}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={400}>
@@ -258,7 +310,26 @@ export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
         <TabsContent value="yearly">
           <Card>
             <CardHeader>
-              <CardTitle>Last 12 Months Performance</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>Last 12 Months Performance</span>
+                <div className="flex gap-2">
+                  {metricButtons.map((metric) => {
+                    const Icon = metric.icon;
+                    return (
+                      <Button
+                        key={metric.id}
+                        size="sm"
+                        variant={selectedMetric === metric.id ? "default" : "outline"}
+                        onClick={() => setSelectedMetric(metric.id)}
+                        className="flex items-center gap-1"
+                      >
+                        <Icon className="h-3 w-3" />
+                        {metric.label}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={500}>
