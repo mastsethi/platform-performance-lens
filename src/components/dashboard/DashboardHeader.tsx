@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, Download, RefreshCw, Settings, BarChart3, Users, Target, TrendingUp, FileDown, FileSpreadsheet, FileImage, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -42,6 +42,7 @@ export function DashboardHeader({
   onMetricChange
 }: DashboardHeaderProps) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const { state } = useSidebar();
 
   // Mock data
   const mockPlatforms = [
@@ -84,6 +85,13 @@ export function DashboardHeader({
         {/* Top row with sidebar trigger and actions */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
+            {state === "collapsed" && (
+              <img 
+                src="/lovable-uploads/528e1ccf-2e57-4049-82bd-7751449dfb0e.png" 
+                alt="Zuvomo Logo" 
+                className="w-8 h-8"
+              />
+            )}
             <SidebarTrigger className="p-2 hover:bg-primary/10 rounded-lg transition-colors border border-primary/20" />
             <div className="text-sm text-muted-foreground">
               Last updated: {format(new Date(), "MMM dd, HH:mm")}

@@ -7,7 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -79,8 +79,10 @@ interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({ selectedPlatforms, onPlatformToggle }: DashboardSidebarProps) {
+  const { state } = useSidebar();
+  
   return (
-    <Sidebar className="border-r border-primary/10 bg-card/50 backdrop-blur-sm">
+    <Sidebar className="border-r border-primary/10 bg-card backdrop-blur-sm">
       {/* Brand Header */}
       <div className="p-4 border-b border-primary/20 bg-gradient-brand/5">
         <div className="flex items-center gap-3">
@@ -89,9 +91,11 @@ export function DashboardSidebar({ selectedPlatforms, onPlatformToggle }: Dashbo
             alt="Zuvomo Logo" 
             className="w-8 h-8"
           />
-          <h1 className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Social Media Dashboard
-          </h1>
+          {state !== "collapsed" && (
+            <h1 className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">
+              Social Media Dashboard
+            </h1>
+          )}
         </div>
       </div>
 
@@ -121,7 +125,7 @@ export function DashboardSidebar({ selectedPlatforms, onPlatformToggle }: Dashbo
                           className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                         />
                         
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-white shadow-sm">
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-card shadow-sm border border-border">
                           <img 
                             src={platform.logo} 
                             alt={`${platform.name} logo`}
@@ -140,13 +144,15 @@ export function DashboardSidebar({ selectedPlatforms, onPlatformToggle }: Dashbo
                           </div>
                         </div>
                         
-                        <div className="flex-1">
-                          <div className="font-medium text-sm">{platform.name}</div>
-                          <div className="text-xs text-muted-foreground">{platform.followers} followers</div>
-                        </div>
+                        {state !== "collapsed" && (
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">{platform.name}</div>
+                            <div className="text-xs text-muted-foreground">{platform.followers} followers</div>
+                          </div>
+                        )}
                       </div>
                       
-                      {selectedPlatforms.includes(platform.id) && (
+                      {selectedPlatforms.includes(platform.id) && state !== "collapsed" && (
                         <Badge 
                           variant="secondary"
                           className="bg-primary/20 text-primary border-primary/30 text-xs"
