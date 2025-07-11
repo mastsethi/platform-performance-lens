@@ -81,7 +81,21 @@ interface DashboardSidebarProps {
 export function DashboardSidebar({ selectedPlatforms, onPlatformToggle }: DashboardSidebarProps) {
   return (
     <Sidebar className="border-r border-primary/10 bg-card/50 backdrop-blur-sm">
-      <SidebarContent className="pt-20">
+      {/* Brand Header */}
+      <div className="p-4 border-b border-primary/20 bg-gradient-brand/5">
+        <div className="flex items-center gap-3">
+          <img 
+            src="/lovable-uploads/528e1ccf-2e57-4049-82bd-7751449dfb0e.png" 
+            alt="Zuvomo Logo" 
+            className="w-8 h-8"
+          />
+          <h1 className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">
+            Social Media Dashboard
+          </h1>
+        </div>
+      </div>
+
+      <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-sm font-semibold text-primary mb-4">
             Social Media Platforms

@@ -32,18 +32,6 @@ export function DashboardLayout() {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-subtle">
-        {/* Floating Brand Header */}
-        <div className="fixed top-4 left-4 z-50 flex items-center gap-3 bg-card/90 backdrop-blur-lg border border-primary/20 rounded-xl px-4 py-2 shadow-brand">
-          <img 
-            src="/lovable-uploads/528e1ccf-2e57-4049-82bd-7751449dfb0e.png" 
-            alt="Brand Logo" 
-            className="w-8 h-8"
-          />
-          <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Social Media Dashboard
-          </h1>
-        </div>
-
         <DashboardSidebar 
           selectedPlatforms={selectedPlatforms}
           onPlatformToggle={(platform) => {
@@ -69,7 +57,7 @@ export function DashboardLayout() {
             onMetricChange={setSelectedMetric}
           />
           
-          <div className="flex-1 p-6 pt-20 space-y-6">
+          <div className="flex-1 p-6 space-y-6">
             {/* Action Bar */}
             <div className="flex justify-end items-center">
               <div className="flex gap-3">

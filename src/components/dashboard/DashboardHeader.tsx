@@ -84,7 +84,7 @@ export function DashboardHeader({
         {/* Top row with sidebar trigger and actions */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <SidebarTrigger />
+            <SidebarTrigger className="p-2 hover:bg-primary/10 rounded-lg transition-colors border border-primary/20" />
             <div className="text-sm text-muted-foreground">
               Last updated: {format(new Date(), "MMM dd, HH:mm")}
             </div>
