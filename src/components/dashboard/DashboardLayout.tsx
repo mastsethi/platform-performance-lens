@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { DataEntryDialog } from "./DataEntryDialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TeamLeaderboard } from "./TeamLeaderboard";
 
 export function DashboardLayout() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([
@@ -20,6 +21,12 @@ export function DashboardLayout() {
     to: new Date()
   });
   const [isDataEntryOpen, setIsDataEntryOpen] = useState(false);
+
+  // Global performance filters
+  const [selectedPlatform, setSelectedPlatform] = useState("all");
+  const [selectedAccount, setSelectedAccount] = useState("all");
+  const [selectedTeamMember, setSelectedTeamMember] = useState("all");
+  const [selectedMetric, setSelectedMetric] = useState("views");
 
   return (
     <SidebarProvider>
@@ -39,6 +46,14 @@ export function DashboardLayout() {
           <DashboardHeader 
             dateRange={dateRange}
             onDateRangeChange={setDateRange}
+            selectedPlatform={selectedPlatform}
+            selectedAccount={selectedAccount}
+            selectedTeamMember={selectedTeamMember}
+            selectedMetric={selectedMetric}
+            onPlatformChange={setSelectedPlatform}
+            onAccountChange={setSelectedAccount}
+            onTeamMemberChange={setSelectedTeamMember}
+            onMetricChange={setSelectedMetric}
           />
           
           <div className="flex-1 p-6 space-y-6">
@@ -64,9 +79,10 @@ export function DashboardLayout() {
 
             {/* Main Dashboard Tabs */}
             <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="comparisons">Comparisons</TabsTrigger>
+                <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
                 <TabsTrigger value="data">Data Table</TabsTrigger>
               </TabsList>
 
@@ -79,6 +95,10 @@ export function DashboardLayout() {
 
               <TabsContent value="comparisons">
                 <ComparisonCharts selectedPlatforms={selectedPlatforms} />
+              </TabsContent>
+
+              <TabsContent value="leaderboard">
+                <TeamLeaderboard metric={selectedMetric as 'reach' | 'views' | 'engagement' | 'conversions'} />
               </TabsContent>
 
               <TabsContent value="data">

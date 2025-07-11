@@ -1,9 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { BarChart3, Users, Target, TrendingUp, Calendar } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { PerformanceFilters } from "./PerformanceFilters";
-import { TeamLeaderboard } from "./TeamLeaderboard";
 import { useState } from "react";
 
 const mockData = [
@@ -31,10 +30,15 @@ interface ChartsProps {
 }
 
 export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
-  const [selectedPlatform, setSelectedPlatform] = useState("all");
-  const [selectedAccount, setSelectedAccount] = useState("all");
-  const [selectedTeamMember, setSelectedTeamMember] = useState("all");
-  const [selectedMetric, setSelectedMetric] = useState("views");
+  // Metric selection state for charts
+  const [activeMetric, setActiveMetric] = useState<'views' | 'reach' | 'engagement' | 'conversions'>('views');
+
+  const metricButtons = [
+    { id: "views", label: "Views", icon: BarChart3 },
+    { id: "reach", label: "Reach", icon: Users },
+    { id: "engagement", label: "Engagement", icon: Target },
+    { id: "conversions", label: "Conversions", icon: TrendingUp },
+  ];
 
   const pieData = selectedPlatforms.map(platform => ({
     name: platform,
@@ -55,21 +59,26 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
                   ({selectedPlatforms.length} platforms selected)
                 </span>
               </div>
+              <div className="flex gap-2">
+                {metricButtons.map((metric) => {
+                  const Icon = metric.icon;
+                  return (
+                    <Button
+                      key={metric.id}
+                      size="sm"
+                      variant={activeMetric === metric.id ? "default" : "outline"}
+                      onClick={() => setActiveMetric(metric.id as 'views' | 'reach' | 'engagement' | 'conversions')}
+                      className="flex items-center gap-1"
+                    >
+                      <Icon className="h-3 w-3" />
+                      {metric.label}
+                    </Button>
+                  );
+                })}
+              </div>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Performance Filters for Trends */}
-            <PerformanceFilters
-              selectedPlatform={selectedPlatform}
-              selectedAccount={selectedAccount}
-              selectedTeamMember={selectedTeamMember}
-              selectedMetric={selectedMetric}
-              onPlatformChange={setSelectedPlatform}
-              onAccountChange={setSelectedAccount}
-              onTeamMemberChange={setSelectedTeamMember}
-              onMetricChange={setSelectedMetric}
-            />
-            
+          <CardContent>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={mockData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -163,8 +172,6 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
         </Card>
       </div>
 
-      {/* Team Leaderboard - Moved to bottom */}
-      <TeamLeaderboard metric={selectedMetric as 'reach' | 'views' | 'engagement' | 'conversions'} />
     </div>
   );
 }

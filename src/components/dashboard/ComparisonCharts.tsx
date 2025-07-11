@@ -9,7 +9,6 @@ import { CalendarIcon, TrendingUp, TrendingDown, Eye, Users, Heart, Target } fro
 import { format, subDays, subWeeks, subMonths, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { cn } from "@/lib/utils";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
-import { PerformanceFilters } from "./PerformanceFilters";
 
 // Mock data for different periods
 const generateMockData = (period: 'week' | 'month' | 'year') => {
@@ -62,9 +61,6 @@ interface ComparisonChartsProps {
 
 export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
   const [selectedMetric, setSelectedMetric] = useState("views");
-  const [selectedPlatform, setSelectedPlatform] = useState("all");
-  const [selectedAccount, setSelectedAccount] = useState("all");
-  const [selectedTeamMember, setSelectedTeamMember] = useState("all");
   const [dateRange, setDateRange] = useState<{from: Date | undefined, to: Date | undefined}>({
     from: subDays(new Date(), 30),
     to: new Date()
@@ -116,18 +112,6 @@ export function ComparisonCharts({ selectedPlatforms }: ComparisonChartsProps) {
 
   return (
     <div className="space-y-6">
-      {/* Performance Filters */}
-      <PerformanceFilters
-        selectedPlatform={selectedPlatform}
-        selectedAccount={selectedAccount}
-        selectedTeamMember={selectedTeamMember}
-        selectedMetric={selectedMetric}
-        onPlatformChange={setSelectedPlatform}
-        onAccountChange={setSelectedAccount}
-        onTeamMemberChange={setSelectedTeamMember}
-        onMetricChange={setSelectedMetric}
-      />
-
       {/* Date Range and Comparison Controls */}
       <Card>
         <CardHeader>
