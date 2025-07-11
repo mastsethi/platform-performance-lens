@@ -7,8 +7,9 @@ import { Charts } from "./Charts";
 import { ComparisonCharts } from "./ComparisonCharts";
 import { DataTable } from "./DataTable";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Download } from "lucide-react";
 import { DataEntryDialog } from "./DataEntryDialog";
+import { ExportDialog } from "./ExportDialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TeamLeaderboard } from "./TeamLeaderboard";
 
@@ -62,13 +63,21 @@ export function DashboardLayout() {
               <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 Social Media Dashboard
               </h1>
-              <Button 
-                onClick={() => setIsDataEntryOpen(true)}
-                className="bg-gradient-primary hover:shadow-glow"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Data
-              </Button>
+              <div className="flex gap-3">
+                <ExportDialog>
+                  <Button variant="outline" className="hover:shadow-glow">
+                    <Download className="mr-2 h-4 w-4" />
+                    Export
+                  </Button>
+                </ExportDialog>
+                <Button 
+                  onClick={() => setIsDataEntryOpen(true)}
+                  className="bg-gradient-primary hover:shadow-glow"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Data
+                </Button>
+              </div>
             </div>
 
             {/* KPI Cards */}

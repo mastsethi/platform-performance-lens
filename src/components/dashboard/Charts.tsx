@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Users, Target, TrendingUp, Calendar, Clock, MapPin } from "lucide-react";
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Area, AreaChart } from "recharts";
-import { useState } from "react";
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Area, AreaChart, ScatterChart, Scatter } from "recharts";
+import { DrilldownModal } from "./DrilldownModal";
 
 // Enhanced mock data with more series
 const mockData = [
@@ -46,6 +47,8 @@ interface ChartsProps {
 export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
   // Metric selection state for charts
   const [activeMetric, setActiveMetric] = useState<'views' | 'reach' | 'engagement' | 'conversions'>('views');
+  const [drilldownOpen, setDrilldownOpen] = useState(false);
+  const [drilldownData, setDrilldownData] = useState({ platform: '', metric: '' });
 
   const metricButtons = [
     { id: "views", label: "Views", icon: BarChart3 },
@@ -60,6 +63,19 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
     color: platformColors[platform as keyof typeof platformColors]
   }));
 
+  const bubbleData = selectedPlatforms.map(platform => ({
+    name: platform,
+    reach: mockData.reduce((sum, item) => sum + (item[platform as keyof typeof item] as number || 0), 0),
+    engagement: mockData.reduce((sum, item) => sum + (item.engagement || 0), 0) / selectedPlatforms.length,
+    conversions: Math.floor(Math.random() * 1000) + 200,
+    color: platformColors[platform as keyof typeof platformColors]
+  }));
+
+  const handleChartClick = (platform: string, metric: string) => {
+    setDrilldownData({ platform, metric });
+    setDrilldownOpen(true);
+  };
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -70,6 +86,9 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
               {`${entry.dataKey}: ${entry.value.toLocaleString()}`}
             </p>
           ))}
+          <div className="text-xs text-muted-foreground mt-1 pt-1 border-t">
+            Click to drill down
+          </div>
         </div>
       );
     }
@@ -80,10 +99,11 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
     <div className="space-y-6 animate-fade-in">
       {/* Enhanced Dashboard with Multiple Chart Types */}
       <Tabs defaultValue="trends" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="trends">Performance Trends</TabsTrigger>
           <TabsTrigger value="distribution">Platform Distribution</TabsTrigger>
           <TabsTrigger value="comparison">Multi-Series Analysis</TabsTrigger>
+          <TabsTrigger value="bubble">Bubble Analysis</TabsTrigger>
           <TabsTrigger value="heatmap">Engagement Heatmap</TabsTrigger>
         </TabsList>
 
@@ -191,7 +211,7 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
-                    <Pie
+                     <Pie
                       data={pieData}
                       cx="50%"
                       cy="50%"
@@ -201,6 +221,7 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
                       dataKey="value"
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
                       labelLine={false}
+                      onClick={(data) => handleChartClick(data.name, 'distribution')}
                     >
                       {pieData.map((entry, index) => (
                         <Cell 
@@ -284,9 +305,68 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
                   <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--muted-foreground))" />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
-                  <Bar yAxisId="left" dataKey="reach" fill="#F59E0B" name="Reach" radius={[2, 2, 0, 0]} />
-                  <Line yAxisId="right" type="monotone" dataKey="engagement" stroke="#8B5CF6" strokeWidth={3} name="Engagement" />
+                  <Bar 
+                    yAxisId="left" 
+                    dataKey="reach" 
+                    fill="#F59E0B" 
+                    name="Reach" 
+                    radius={[2, 2, 0, 0]}
+                    onClick={() => handleChartClick('all', 'reach')}
+                    className="cursor-pointer"
+                  />
+                  <Line 
+                    yAxisId="right" 
+                    type="monotone" 
+                    dataKey="engagement" 
+                    stroke="#8B5CF6" 
+                    strokeWidth={3} 
+                    name="Engagement"
+                  />
                 </ComposedChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Bubble Analysis Tab */}
+        <TabsContent value="bubble">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                Reach vs Engagement vs Conversions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={400}>
+                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="reach" stroke="hsl(var(--muted-foreground))" name="Reach" />
+                  <YAxis dataKey="engagement" stroke="hsl(var(--muted-foreground))" name="Engagement" />
+                  <Tooltip 
+                    cursor={{ strokeDasharray: '3 3' }}
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload;
+                        return (
+                          <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+                            <p className="font-medium capitalize">{data.name}</p>
+                            <p className="text-sm">Reach: {data.reach.toLocaleString()}</p>
+                            <p className="text-sm">Engagement: {data.engagement.toLocaleString()}</p>
+                            <p className="text-sm">Conversions: {data.conversions.toLocaleString()}</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Scatter 
+                    name="Platform Performance" 
+                    data={bubbleData} 
+                    fill="hsl(var(--primary))"
+                    onClick={(data) => handleChartClick(data.name, 'bubble')}
+                  />
+                </ScatterChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
@@ -351,6 +431,13 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <DrilldownModal
+        open={drilldownOpen}
+        onOpenChange={setDrilldownOpen}
+        platform={drilldownData.platform}
+        metric={drilldownData.metric}
+      />
     </div>
   );
 }
