@@ -79,7 +79,7 @@ export function DashboardHeader({
   };
 
   return (
-    <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+    <header className="border-b border-primary/20 bg-card/80 backdrop-blur-lg sticky top-0 z-10 shadow-brand">
       <div className="p-4 space-y-4">
         {/* Top row with sidebar trigger and actions */}
         <div className="flex items-center justify-between">
@@ -164,8 +164,8 @@ export function DashboardHeader({
         </div>
 
         {/* Performance Filters Row */}
-        <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border">
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+        <div className="flex items-center gap-4 p-4 bg-gradient-brand/5 rounded-lg border border-primary/20 shadow-sm">
+          <div className="flex items-center gap-2 text-sm font-medium text-primary">
             <BarChart3 className="h-4 w-4" />
             Performance Filters
           </div>

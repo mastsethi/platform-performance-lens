@@ -10,7 +10,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Twitter, 
   Instagram, 
@@ -22,13 +22,55 @@ import {
 } from "lucide-react";
 
 const platforms = [
-  { id: "twitter", name: "Twitter", icon: Twitter, color: "twitter", accounts: 3 },
-  { id: "instagram", name: "Instagram", icon: Instagram, color: "instagram", accounts: 2 },
-  { id: "youtube", name: "YouTube", icon: Youtube, color: "youtube", accounts: 1 },
-  { id: "linkedin", name: "LinkedIn", icon: Linkedin, color: "linkedin", accounts: 2 },
-  { id: "medium", name: "Medium", icon: Hash, color: "medium", accounts: 1 },
-  { id: "reddit", name: "Reddit", icon: BarChart3, color: "reddit", accounts: 1 },
-  { id: "website", name: "Website", icon: Globe, color: "website", accounts: 1 },
+  {
+    name: "Twitter",
+    id: "twitter",
+    color: "#1DA1F2",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/twitter/twitter-original.svg",
+    followers: "125K"
+  },
+  {
+    name: "Instagram", 
+    id: "instagram",
+    color: "#E4405F",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png",
+    followers: "89K"
+  },
+  {
+    name: "YouTube",
+    id: "youtube", 
+    color: "#FF0000",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg",
+    followers: "156K"
+  },
+  {
+    name: "LinkedIn",
+    id: "linkedin",
+    color: "#0077B5", 
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg",
+    followers: "67K"
+  },
+  {
+    name: "Medium",
+    id: "medium",
+    color: "#000000",
+    logo: "https://miro.medium.com/v2/resize:fit:195/1*emiGsBgJu2KHWyjluhKXQw.png",
+    followers: "34K"
+  },
+  {
+    name: "Reddit",
+    id: "reddit",
+    color: "#FF4500",
+    logo: "https://www.redditinc.com/assets/images/site/reddit-logo.png",
+    followers: "45K"
+  },
+  {
+    name: "Website",
+    id: "website",
+    color: "#22C55E",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/chrome/chrome-original.svg",
+    followers: "23K"
+  }
 ];
 
 interface DashboardSidebarProps {
@@ -38,80 +80,71 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ selectedPlatforms, onPlatformToggle }: DashboardSidebarProps) {
   return (
-    <Sidebar className="w-72 border-r border-border">
-      <div className="p-4 border-b border-border">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-            <BarChart3 className="h-4 w-4 text-primary-foreground" />
-          </div>
-          <h2 className="text-lg font-semibold">Analytics</h2>
-        </div>
-      </div>
-
-      <SidebarContent>
+    <Sidebar className="border-r border-primary/10 bg-card/50 backdrop-blur-sm">
+      <SidebarContent className="pt-20">
         <SidebarGroup>
-          <SidebarGroupLabel>Platforms</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sm font-semibold text-primary mb-4">
+            Social Media Platforms
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {platforms.map((platform) => {
-                const Icon = platform.icon;
-                const isSelected = selectedPlatforms.includes(platform.id);
-                
-                return (
-                  <SidebarMenuItem key={platform.id}>
-                    <SidebarMenuButton
-                      onClick={() => onPlatformToggle(platform.id)}
-                      className={`w-full flex items-center justify-between p-3 rounded-lg transition-all ${
-                        isSelected 
-                          ? 'bg-accent text-accent-foreground shadow-sm' 
-                          : 'hover:bg-muted'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-${platform.color}/10`}>
-                          <Icon className={`h-4 w-4 text-${platform.color}`} />
+            <SidebarMenu className="space-y-2">
+              {platforms.map((platform) => (
+                <SidebarMenuItem key={platform.id}>
+                  <SidebarMenuButton 
+                    className={`
+                      p-4 rounded-lg transition-all duration-200 hover:bg-primary/5 border
+                      ${selectedPlatforms.includes(platform.id) 
+                        ? 'bg-primary/10 border-primary/30 shadow-sm' 
+                        : 'border-border/50 hover:border-primary/20'
+                      }
+                    `}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center space-x-3">
+                        <Checkbox
+                          checked={selectedPlatforms.includes(platform.id)}
+                          onCheckedChange={() => onPlatformToggle(platform.id)}
+                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        />
+                        
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-white shadow-sm">
+                          <img 
+                            src={platform.logo} 
+                            alt={`${platform.name} logo`}
+                            className="w-6 h-6 object-contain"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              target.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                          <div 
+                            className="w-6 h-6 rounded flex items-center justify-center text-xs font-semibold text-white hidden"
+                            style={{ backgroundColor: platform.color }}
+                          >
+                            {platform.name[0]}
+                          </div>
                         </div>
-                        <div className="flex flex-col items-start">
-                          <span className="font-medium">{platform.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {platform.accounts} account{platform.accounts > 1 ? 's' : ''}
-                          </span>
+                        
+                        <div className="flex-1">
+                          <div className="font-medium text-sm">{platform.name}</div>
+                          <div className="text-xs text-muted-foreground">{platform.followers} followers</div>
                         </div>
                       </div>
-                      <Switch 
-                        checked={isSelected}
-                        onChange={() => {}} // Handled by parent click
-                        className="pointer-events-none"
-                      />
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+                      
+                      {selectedPlatforms.includes(platform.id) && (
+                        <Badge 
+                          variant="secondary"
+                          className="bg-primary/20 text-primary border-primary/30 text-xs"
+                        >
+                          Active
+                        </Badge>
+                      )}
+                    </div>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Quick Stats</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <div className="space-y-3 p-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total Platforms</span>
-                <Badge variant="secondary">{selectedPlatforms.length}</Badge>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Active Accounts</span>
-                <Badge variant="secondary">
-                  {platforms
-                    .filter(p => selectedPlatforms.includes(p.id))
-                    .reduce((sum, p) => sum + p.accounts, 0)}
-                </Badge>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Data Sources</span>
-                <Badge variant="outline">Manual + API</Badge>
-              </div>
-            </div>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
