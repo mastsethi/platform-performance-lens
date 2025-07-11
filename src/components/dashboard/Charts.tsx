@@ -222,6 +222,7 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
                       labelLine={false}
                       onClick={(data) => handleChartClick(data.name, 'distribution')}
+                      className="cursor-pointer"
                     >
                       {pieData.map((entry, index) => (
                         <Cell 
@@ -432,11 +433,11 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
         </TabsContent>
       </Tabs>
 
-      <DrilldownModal
-        open={drilldownOpen}
-        onOpenChange={setDrilldownOpen}
-        platform={drilldownData.platform}
-        metric={drilldownData.metric}
+      <DrilldownModal 
+        open={drilldownOpen} 
+        onOpenChange={setDrilldownOpen} 
+        platform={drilldownData.platform} 
+        metric={drilldownData.metric} 
       />
     </div>
   );

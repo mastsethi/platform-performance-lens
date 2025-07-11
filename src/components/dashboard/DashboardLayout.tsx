@@ -6,6 +6,7 @@ import { KPICards } from "./KPICards";
 import { Charts } from "./Charts";
 import { ComparisonCharts } from "./ComparisonCharts";
 import { DataTable } from "./DataTable";
+import { AlertsPanel } from "./AlertsPanel";
 import { Button } from "@/components/ui/button";
 import { Plus, Download } from "lucide-react";
 import { DataEntryDialog } from "./DataEntryDialog";
@@ -92,11 +93,18 @@ export function DashboardLayout() {
                 <TabsTrigger value="data">Data Table</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview">
-                <Charts 
-                  selectedPlatforms={selectedPlatforms} 
-                  dateRange={dateRange}
-                />
+              <TabsContent value="overview" className="space-y-6">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  <div className="xl:col-span-2">
+                    <Charts 
+                      selectedPlatforms={selectedPlatforms} 
+                      dateRange={dateRange}
+                    />
+                  </div>
+                  <div className="space-y-6">
+                    <AlertsPanel />
+                  </div>
+                </div>
               </TabsContent>
 
               <TabsContent value="comparisons">
