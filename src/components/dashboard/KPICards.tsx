@@ -89,7 +89,7 @@ export function KPICards({ selectedPlatforms, dateRange }: KPICardsProps) {
   return (
     <div className="space-y-8">
       {/* Summary Stats Banner */}
-      <div className="bg-gradient-brand/5 border border-primary/20 rounded-xl p-6 shadow-brand">
+      <div className="bg-card border border-primary/20 rounded-xl p-6 shadow-brand">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="text-center">
             <div className="text-2xl font-bold text-primary">6</div>

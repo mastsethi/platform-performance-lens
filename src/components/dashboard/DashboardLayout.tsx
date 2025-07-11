@@ -31,7 +31,7 @@ export function DashboardLayout() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-subtle">
+      <div className="min-h-screen flex w-full bg-background">
         <DashboardSidebar 
           selectedPlatforms={selectedPlatforms}
           onPlatformToggle={(platform) => {
