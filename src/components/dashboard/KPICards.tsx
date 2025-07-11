@@ -75,43 +75,88 @@ interface KPICardsProps {
 
 export function KPICards({ selectedPlatforms, dateRange }: KPICardsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-      {kpis.map((kpi) => {
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+      {kpis.map((kpi, index) => {
         const Icon = kpi.icon;
         const TrendIcon = kpi.trend === "up" ? ArrowUp : ArrowDown;
         
         return (
-          <Card key={kpi.title} className="relative overflow-hidden group hover:shadow-glow/20 transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+          <Card 
+            key={kpi.title} 
+            className={`
+              relative overflow-hidden group cursor-pointer
+              hover:shadow-xl hover:scale-105 
+              transition-all duration-500 ease-out
+              animate-slide-up border-2 hover:border-primary/20
+              ${kpi.trend === "up" ? "hover:shadow-green-400/20" : "hover:shadow-red-400/20"}
+            `}
+            style={{ 
+              animationDelay: `${index * 100}ms`,
+              animationFillMode: 'both'
+            }}
+          >
+            {/* Gradient Background */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${kpi.bgColor} opacity-5 group-hover:opacity-10 transition-opacity duration-300`} />
+            
+            {/* Trend Indicator Bar */}
+            <div 
+              className={`absolute top-0 left-0 h-1 w-full transition-all duration-500 ${
+                kpi.trend === "up" ? "bg-gradient-to-r from-green-400 to-green-600" : "bg-gradient-to-r from-red-400 to-red-600"
+              }`}
+            />
+            
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                 {kpi.title}
               </CardTitle>
-              <div className={`p-2 rounded-lg ${kpi.bgColor}`}>
-                <Icon className={`h-4 w-4 ${kpi.color}`} />
+              <div className={`p-3 rounded-xl ${kpi.bgColor} group-hover:scale-110 transition-transform duration-300`}>
+                <Icon className={`h-5 w-5 ${kpi.color}`} />
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold">{kpi.value}</div>
-                <Badge 
-                  variant="secondary" 
-                  className={`flex items-center gap-1 ${
-                    kpi.trend === "up" 
-                      ? "text-green-400 bg-green-400/10" 
-                      : "text-red-400 bg-red-400/10"
-                  }`}
-                >
-                  <TrendIcon className="h-3 w-3" />
-                  {kpi.change}
-                </Badge>
+            
+            <CardContent className="relative z-10">
+              <div className="space-y-3">
+                <div className="text-3xl font-bold tracking-tight group-hover:text-primary transition-colors">
+                  {kpi.value}
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Badge 
+                    variant="outline" 
+                    className={`
+                      flex items-center gap-1 px-3 py-1 border-0 font-medium
+                      ${kpi.trend === "up" 
+                        ? "text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-900/30" 
+                        : "text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/30"
+                      }
+                    `}
+                  >
+                    <TrendIcon className="h-3 w-3" />
+                    {kpi.change}
+                  </Badge>
+                  
+                  <div className={`text-xs font-medium ${kpi.trend === "up" ? "text-green-600" : "text-red-600"}`}>
+                    vs. last month
+                  </div>
+                </div>
+                
+                {/* Mini Progress Bar */}
+                <div className="w-full bg-muted/50 h-1 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full transition-all duration-1000 ease-out ${
+                      kpi.trend === "up" ? "bg-gradient-to-r from-green-400 to-green-600" : "bg-gradient-to-r from-red-400 to-red-600"
+                    }`}
+                    style={{ 
+                      width: `${Math.abs(parseFloat(kpi.change.replace('%', ''))) * 2}%`,
+                      animationDelay: `${index * 200 + 500}ms`
+                    }}
+                  />
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                vs. previous period
-              </p>
             </CardContent>
             
-            {/* Animated gradient overlay on hover */}
-            <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+            {/* Hover Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 transition-opacity duration-500" />
           </Card>
         );
       })}

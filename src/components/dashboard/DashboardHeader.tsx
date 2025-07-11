@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Download, RefreshCw, Settings, BarChart3, Users, Target, TrendingUp } from "lucide-react";
+import { CalendarIcon, Download, RefreshCw, Settings, BarChart3, Users, Target, TrendingUp, FileDown, FileSpreadsheet, FileImage, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 interface DateRange {
   from: Date;
@@ -65,6 +68,16 @@ export function DashboardHeader({
   const selectedPlatformData = mockPlatforms.find(p => p.id === selectedPlatform);
   const selectedMetricData = performanceMetrics.find(m => m.id === selectedMetric);
 
+  const handleExport = (format: 'csv' | 'excel' | 'pdf' | 'png') => {
+    toast.success(`Exporting data as ${format.toUpperCase()}...`);
+    // Implement actual export logic here
+  };
+
+  const handleRefresh = () => {
+    toast.success("Data refreshed successfully!");
+    // Implement actual refresh logic here
+  };
+
   return (
     <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
       <div className="p-4 space-y-4">
@@ -109,15 +122,40 @@ export function DashboardHeader({
             </Popover>
 
             {/* Quick Actions */}
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleRefresh}>
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh
             </Button>
             
-            <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleExport('csv')}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Export as CSV
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport('excel')}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Export as Excel
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => handleExport('pdf')}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Export as PDF
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport('png')}>
+                  <FileImage className="h-4 w-4 mr-2" />
+                  Export Charts as PNG
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <ThemeToggle />
 
             <Button variant="outline" size="sm">
               <Settings className="h-4 w-4" />
