@@ -46,13 +46,13 @@ const generateMockData = (period: 'week' | 'month' | 'year') => {
 };
 
 const platformColors = {
-  twitter: "#1DA1F2",
-  instagram: "#E4405F", 
-  youtube: "#FF0000",
-  linkedin: "#0077B5",
-  medium: "#000000",
-  reddit: "#FF4500",
-  website: "#22C55E"
+  twitter: "hsl(var(--chart-1))",
+  instagram: "hsl(var(--chart-2))", 
+  youtube: "hsl(var(--chart-3))",
+  linkedin: "hsl(var(--chart-4))",
+  medium: "hsl(var(--chart-5))",
+  reddit: "hsl(var(--chart-6))",
+  website: "hsl(var(--brand-primary))"
 };
 
 interface ComparisonChartsProps {

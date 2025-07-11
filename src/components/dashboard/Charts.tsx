@@ -28,15 +28,15 @@ const heatmapData = [
 ];
 
 const platformColors = {
-  twitter: "#1DA1F2",
-  instagram: "#E4405F", 
-  youtube: "#FF0000",
-  linkedin: "#0077B5",
-  medium: "#000000",
-  reddit: "#FF4500",
-  website: "#22C55E",
-  engagement: "#8B5CF6",
-  reach: "#F59E0B"
+  twitter: "hsl(var(--chart-1))",
+  instagram: "hsl(var(--chart-2))", 
+  youtube: "hsl(var(--chart-3))",
+  linkedin: "hsl(var(--chart-4))",
+  medium: "hsl(var(--chart-5))",
+  reddit: "hsl(var(--chart-6))",
+  website: "hsl(var(--brand-primary))",
+  engagement: "hsl(var(--accent))",
+  reach: "hsl(var(--primary))"
 };
 
 interface ChartsProps {
@@ -308,7 +308,7 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
                   <Bar 
                     yAxisId="left" 
                     dataKey="reach" 
-                    fill="#F59E0B" 
+                    fill="hsl(var(--primary))" 
                     name="Reach" 
                     radius={[2, 2, 0, 0]}
                     onClick={() => handleChartClick('all', 'reach')}
@@ -318,7 +318,7 @@ export function Charts({ selectedPlatforms, dateRange }: ChartsProps) {
                     yAxisId="right" 
                     type="monotone" 
                     dataKey="engagement" 
-                    stroke="#8B5CF6" 
+                    stroke="hsl(var(--accent))" 
                     strokeWidth={3} 
                     name="Engagement"
                   />
